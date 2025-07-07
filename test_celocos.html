@@ -63,7 +63,7 @@
     }
 
     .input-field {
-%;
+      width: 100%;
       padding: 12px;
       border-radius: 10px;
       border: none;
@@ -148,6 +148,26 @@
       background: #ff4444;
       color: #fff;
     }
+
+    .result {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .result-value {
+      font-size: 2.5em;
+      color: #00eaff;
+      font-weight: bold;
+    }
+
+    .result-msg {
+      margin-top: 16px;
+      font-size: 1.2em;
+      background: #232323;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #00eaff33;
+    }
   </style>
 </head>
 <body>
@@ -163,7 +183,7 @@
 <div class="eye-anim">👁️</div>
 <div class="multicolor-title fade-in">¿Cuánto celos hay en tu relación?</div>
 
-<div class="input-box fade-in">
+<div class="input-box fade-in" id="formulario">
   <label class="input-label">Ton nom</label>
   <input class="input-field" id="nombreUsuario" placeholder="Ton nom">
   <label class="input-label">Nom de ton/ta partenaire</label>
@@ -176,6 +196,11 @@
   <div class="process-step" id="processStep">Connexion à la base de données...</div>
 </div>
 
+<div id="resultado" class="result fade-in" style="display:none;">
+  <div class="result-value" id="resultValue"></div>
+  <div class="result-msg" id="resultMsg"></div>
+</div>
+
 <script>
   const steps = [
     "Connexion à la base de données...",
@@ -186,8 +211,15 @@
     "Finalisation..."
   ];
 
+  const messages = [
+    { min: 0, max: 30, msg: "💙 Très peu de jalousie. Vous avez une belle confiance mutuelle." },
+    { min: 31, max: 60, msg: "🧡 Quelques jalousies normales. Continuez à dialoguer." },
+    { min: 61, max: 80, msg: "❤️ Niveau de jalousie élevé. Il est temps de renforcer la confiance." },
+    { min: 81, max: 100, msg: "🔥 Attention ! Jalousie très forte. Parlez-en sérieusement." }
+  ];
+
   function startAnalysis() {
-    document.querySelector('.input-box').style.display = 'none';
+    document.getElementById('formulario').style.display = 'none';
     const proceso = document.getElementById('proceso');
     proceso.style.display = 'block';
     let i = 0;
@@ -197,20 +229,22 @@
       i++;
       if (i >= steps.length) {
         clearInterval(interval);
-        stepText.textContent = "✅ Analyse terminée !";
+        setTimeout(showResult, 1000);
       }
     }, 1200);
+  }
+
+  function showResult() {
+    document.getElementById('proceso').style.display = 'none';
+    const resultado = document.getElementById('resultado');
+    resultado.style.display = 'block';
+    const percent = Math.floor(Math.random() * 91) + 10;
+    document.getElementById('resultValue').textContent = percent + "% de jalousie";
+    const msg = messages.find(m => percent >= m.min && percent <= m.max);
+    document.getElementById('resultMsg').textContent = msg ? msg.msg : "";
   }
 
   function playMusic() {
     document.getElementById('bgMusic').play();
     document.getElementById('audioPrompt').style.display = 'none';
   }
-
-  function closePrompt() {
-    document.getElementById('audioPrompt').style.display = 'none';
-  }
-</script>
-
-</body>
-</html>
